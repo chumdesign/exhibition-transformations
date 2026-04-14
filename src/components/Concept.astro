@@ -1,0 +1,60 @@
+---
+const { lang = 'uk' } = Astro.props;
+
+const t = lang === 'uk' ? {
+  title: 'Концепція',
+  curator: 'Куратор: Тетяна Шуляк',
+  h3: 'Виставка «Трансформації»',
+  p1: 'Ми живемо в часи докорінної трансформації світу. Вона відбувається буквально на наших очах. Старі, усталені норми ламаються, змінюється світогляд, змінюється наше сприйняття реальності.',
+  p2: 'В мистецтві — це зміна форм та сенсів.<br/>Як бачить кожен художник ці зміни?<br/>Як він їх може відобразити?<br/>Як змінюється сам?<br/>Чи може художник трансформувати світ? Чи може змінити його?',
+  p3: 'Це питання задавали собі безліч разів безліч художників. По суті-це одвічне питання художника про його місце в цьому світі. Нам хочеться, щоб світ був сталим, але він весь час змінюється. Ця виставка-той момент, коли ми розглядаємо в реальному вимірі цю трансформацію. І кожен художник має побачити свою роботу в новому оточенні, в нових голосах. Він наочно побачить, як трансформується його робота а разом з нею трансформується його світ.'
+} : {
+  title: 'Concept',
+  curator: 'Curator: Tetyana Shulyak',
+  h3: 'Exhibition "Transformations"',
+  p1: 'We live in times of fundamental transformation of the world. It happens literally before our eyes. Old, established norms are breaking, worldviews are shifting, and our perception of reality changes.',
+  p2: 'In art, this means changing forms and meanings.<br/>How does each artist see these changes?<br/>How can they reflect them?<br/>How do they change themselves?<br/>Can an artist transform the world? Can they change it?',
+  p3: 'Countless artists have asked themselves this question countless times. Essentially, this is the eternal question of the artist regarding their place in this world. We want the world to be stable, but it is constantly changing. This exhibition is the moment we observe this transformation in real-time. And each artist is supposed to see their work in a new environment, amidst new voices. They will clearly see how their work transforms, and with it, their world.'
+};
+---
+<section id="concept" class="pt-16 pb-16 md:py-32 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 md:mb-20 block">
+      <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest text-gray-900 inline-block relative">
+        {t.title}
+        <div class="absolute w-1/2 h-1 bg-gray-900 left-1/4 -bottom-4"></div>
+      </h2>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-16 items-start">
+      <div class="w-full md:w-2/5 flex flex-col items-center flex-shrink-0">
+        <div class="relative w-48 h-48 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl group">
+          <img 
+            id="curator-img"
+            src=""
+            alt="Куратор виставки" 
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+          />
+        </div>
+        <p class="mt-6 text-gray-500 font-light text-sm tracking-wide">{t.curator}</p>
+      </div>
+      
+      <div class="w-full md:w-3/5">
+        <h3 class="text-2xl md:text-3xl font-semibold mb-6 text-gray-800 text-center md:text-left">{t.h3}</h3>
+        <p class="text-gray-600 leading-relaxed mb-6 font-light text-base">
+          {t.p1}
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-6 font-light text-base" set:html={t.p2}>
+        </p>
+        <p class="text-gray-600 leading-relaxed font-light text-base">
+          {t.p3}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import curator from '../assets/images/curator.webp';
+  document.getElementById('curator-img').src = curator.src;
+</script>

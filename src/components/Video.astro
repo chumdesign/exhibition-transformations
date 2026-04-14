@@ -1,0 +1,63 @@
+---
+---
+<section class="bg-black">
+  <div class="w-full flex items-center justify-center overflow-hidden bg-black">
+    <video id="curtain-video" class="w-full h-auto max-h-screen object-cover" muted playsinline>
+      <source src="/curtain.mp4" type="video/mp4" />
+      Ваш браузер не підтримує відео.
+    </video>
+  </div>
+</section>
+
+<script>
+  const video = document.getElementById('curtain-video') as HTMLVideoElement;
+  if (video) {
+    let isReversing = false;
+    let lastTime = Date.now();
+    let isVisible = false;
+
+    // Intersection observer so it only plays when visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+            if(!isReversing) {
+                video.play().catch(e => console.error('Video play error:', e));
+            } else {
+                lastTime = Date.now();
+                requestAnimationFrame(reversePlay);
+            }
+        } else {
+            video.pause();
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    observer.observe(video);
+
+    function reversePlay() {
+      if (!isReversing || !isVisible) return;
+      
+      const now = Date.now();
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+      
+      video.currentTime = Math.max(0, video.currentTime - delta);
+      
+      if (video.currentTime <= 0.05) {
+        isReversing = false;
+        if (isVisible) {
+            video.play().catch(e => console.error('Video play error:', e));
+        }
+      } else {
+        requestAnimationFrame(reversePlay);
+      }
+    }
+
+    video.addEventListener('ended', () => {
+      isReversing = true;
+      lastTime = Date.now();
+      requestAnimationFrame(reversePlay);
+    });
+  }
+</script>

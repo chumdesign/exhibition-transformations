@@ -1,0 +1,182 @@
+---
+const { lang = 'uk' } = Astro.props;
+
+// Translate mappings
+const dictionary: Record<string, string> = {
+  "полотно": "canvas",
+  "олія": "oil",
+  "папір": "paper",
+  "акварель": "watercolor",
+  "акрил": "acrylic",
+  "змішана техніка": "mixed media",
+  "олівець": "pencil",
+  "дерево": "wood",
+  "метал": "metal",
+  "офорт": "etching",
+  "травлення": "engraving",
+  "текстиль": "textile",
+  "текстильний колаж": "textile collage",
+  "скло": "glass",
+  "туш": "ink",
+  "перо": "pen",
+  "двп": "fiberboard",
+  "левкас": "gesso",
+  "жвт": "zhvt",
+  "емаль": "enamel",
+  "темпера": "tempera",
+  "артоб_єкт": "art object",
+  "тоноване дерево": "tinted wood",
+  "фанера": "plywood",
+  "см": "cm"
+};
+
+const translateDetails = (details: string) => {
+   if (lang === 'uk') return details;
+   let enDetails = details.toLowerCase();
+   for (const [ua, en] of Object.entries(dictionary)) {
+     enDetails = enDetails.replace(new RegExp(ua, 'g'), en);
+   }
+   return enDetails;
+}
+
+const rawImages = import.meta.glob('../assets/images/artwork/*.webp', { eager: true });
+const artworks = Object.entries(rawImages).map(([path, img]: [string, any]) => {
+  const filename = path.split('/').pop() || '';
+  const parts = filename.split('_');
+  
+  let authorHtml = '';
+  let titleHtml = '';
+  let detailsHtml = '';
+  let fullCaptionHtml = '';
+  
+  if (parts.length >= 3) {
+    const author = parts[0].replace(/,\s*$/, '').trim();
+    let title = parts[1].trim();
+    if (title.length > 0) {
+      // Uppercase the first letter of the title
+      title = title.charAt(0).toUpperCase() + title.slice(1);
+    }
+    const details = parts[2].replace(/\.webp$/, '').replace(/^,\s*/, '').trim();
+    
+    authorHtml = author;
+    titleHtml = title;
+    detailsHtml = translateDetails(details);
+    fullCaptionHtml = `<span class="font-bold block mb-2 text-lg tracking-wide md:text-xl"><span class="uppercase">${author}</span> — «${title}»</span><span class="font-light text-sm md:text-base opacity-80">${detailsHtml}</span>`;
+  } else {
+    authorHtml = filename.replace('.webp', '');
+    fullCaptionHtml = `<span class="font-bold block mb-1 text-lg uppercase tracking-wide md:text-xl">${authorHtml}</span>`;
+  }
+
+  return {
+    src: img.default.src,
+    author: authorHtml,
+    title: titleHtml,
+    details: detailsHtml,
+    caption: fullCaptionHtml,
+    width: img.default.width || 800,
+    height: img.default.height || 600
+  };
+}).sort((a, b) => {
+  const isAPriority = a.author.includes('Шуляк') || a.author.includes('Ткаченко');
+  const isBPriority = b.author.includes('Шуляк') || b.author.includes('Ткаченко');
+  if (isAPriority && !isBPriority) return -1;
+  if (!isAPriority && isBPriority) return 1;
+  return 0;
+});
+
+const tHeading = lang === 'uk' ? 'Картини' : 'Artworks';
+---
+<section id="artworks" class="pt-16 pb-24 md:py-32 bg-gray-50">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 block">
+      <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest text-gray-900 inline-block relative">
+        {tHeading}
+        <div class="absolute w-1/2 h-1 bg-gray-900 left-1/4 -bottom-4"></div>
+      </h2>
+    </div>
+
+    <!-- Masonry Layout using CSS columns -->
+    <div class="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-3 sm:gap-6 space-y-3 sm:space-y-6">
+      {artworks.map(art => (
+        <div class="break-inside-avoid relative group cursor-pointer" data-lightbox={art.src} data-caption={art.caption}>
+          <img 
+            src={art.src} 
+            alt={art.title || art.author} 
+            loading="lazy" 
+            class="w-full h-auto rounded-sm shadow-md transition-shadow duration-300 group-hover:shadow-2xl"
+            width={art.width}
+            height={art.height}
+          />
+          <div class="absolute inset-0 bg-white/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center backdrop-blur-sm">
+             <span class="text-gray-900 font-bold tracking-wide text-xs sm:text-sm md:text-base leading-relaxed mb-2 drop-shadow-sm"><span class="uppercase">{art.author}</span> <br/> {art.title ? <span class="normal-case tracking-normal font-semibold">«{art.title}»</span> : ''}</span>
+             {art.details && <span class="text-gray-600 font-light text-[0.65rem] sm:text-xs md:text-sm tracking-wide leading-tight">{art.details}</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Simple Vanilla JS Lightbox -->
+<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex-col items-center justify-center backdrop-blur-md opacity-0 transition-opacity duration-300">
+  <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-gray-400 transition-colors cursor-pointer z-50">
+    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain shadow-2xl relative z-10" />
+  <div id="lightbox-caption" class="text-white mt-6 text-center px-4 relative z-10"></div>
+</div>
+
+<script>
+  const galleryItems = document.querySelectorAll('[data-lightbox]');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  if (lightbox && lightboxImg && lightboxCaption && lightboxClose) {
+    const closeLightbox = () => {
+      lightbox.classList.remove('opacity-100');
+      lightbox.classList.add('opacity-0');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        lightboxImg.src = '';
+      }, 300);
+      document.body.style.overflow = '';
+    };
+
+    galleryItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const src = item.getAttribute('data-lightbox');
+        const caption = item.getAttribute('data-caption');
+        
+        if (src) lightboxImg.src = src;
+        if (caption) lightboxCaption.innerHTML = caption;
+        
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        
+        // Small delay to allow display flex to apply before transitioning opacity
+        setTimeout(() => {
+          lightbox.classList.remove('opacity-0');
+          lightbox.classList.add('opacity-100');
+        }, 10);
+
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+        closeLightbox();
+      }
+    });
+  }
+</script>

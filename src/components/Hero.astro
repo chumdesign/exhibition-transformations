@@ -1,0 +1,63 @@
+---
+---
+<section class="relative lg:h-[calc(100vh-60px)] h-auto mt-[60px] w-full flex items-center justify-center overflow-hidden bg-[#2b2a28]">
+    <div class="swiper hero-swiper w-full max-w-screen-xl mx-auto lg:h-full h-auto relative">
+        <div class="swiper-wrapper">
+        </div>
+    </div>
+</section>
+
+<!-- Imports -->
+<script>
+    import poster1_1x from '../assets/images/posters/poster1-1x.webp';
+    import poster1_2x from '../assets/images/posters/poster1-2x.webp';
+    import poster2_1x from '../assets/images/posters/poster2-1x.webp';
+    import poster2_2x from '../assets/images/posters/poster2-2x.webp';
+
+    const posters = [
+      { src1x: poster1_1x.src, src2x: poster1_2x.src },
+      { src1x: poster2_1x.src, src2x: poster2_2x.src }
+    ];
+
+    const wrapper = document.querySelector('.hero-swiper .swiper-wrapper');
+    posters.forEach(poster => {
+        wrapper.innerHTML += `
+            <div class="swiper-slide w-full lg:h-full h-auto relative flex items-center justify-center">
+                <img 
+                  src="${poster.src1x}" 
+                  srcset="${poster.src1x} 1x, ${poster.src2x} 2x" 
+                  class="w-full lg:h-full h-auto object-contain object-center block" 
+                  alt="Poster" 
+                />
+            </div>
+        `;
+    });
+
+    import Swiper from 'swiper';
+    import { Autoplay, EffectFade } from 'swiper/modules';
+    import 'swiper/css';
+    import 'swiper/css/effect-fade';
+
+    new Swiper('.hero-swiper', {
+        modules: [Autoplay, EffectFade],
+        effect: 'fade',
+        speed: 2000,
+        fadeEffect: { crossFade: true },
+        loop: true,
+        autoHeight: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        }
+    });
+</script>
+
+<style>
+  :global(.swiper-pagination-bullet) {
+    background-color: white !important;
+    opacity: 0.5;
+  }
+  :global(.swiper-pagination-bullet-active) {
+    opacity: 1;
+  }
+</style>

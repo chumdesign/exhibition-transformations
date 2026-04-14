@@ -1,0 +1,47 @@
+---
+const { lang = 'uk' } = Astro.props;
+const currentYear = new Date().getFullYear();
+
+const t = lang === 'uk' ? {
+  rights: 'Виставка «Трансформації». Усі права захищено.',
+  curator: 'Куратор'
+} : {
+  rights: '"Transformations" Exhibition. All rights reserved.',
+  curator: 'Curator'
+};
+---
+<footer class="bg-gray-50 py-12 border-t border-gray-200 mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm font-light">
+    <div class="mb-8 md:mb-0 text-center md:text-left flex flex-col items-center md:items-start">
+      <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+        <img src="/favicon.svg" alt="Галерея" class="w-12 h-12 object-contain" />
+        <div class="text-center md:text-left font-normal text-sm md:text-base" style="color: #746c6c; font-family: 'Times New Roman', Times, serif; text-transform: none; letter-spacing: normal; line-height: 1.1;">
+          {lang === 'uk' ? (
+            <>Управління культури i туризму<br />Кременчуцька міська художня галерея</>
+          ) : (
+            <>Department of Culture and Tourism<br />Kremenchuk City Art Gallery</>
+          )}
+        </div>
+      </div>
+      <div class="text-xs hidden md:block mt-3">
+        &copy; {currentYear} {t.rights}
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-12 uppercase tracking-widest text-xs font-semibold items-center md:items-start">
+      <div class="flex flex-col items-center md:items-start">
+        <div class="flex space-x-4">
+          <a href="#" class="hover:text-gray-900 transition-colors">Facebook</a>
+          <a href="#" class="hover:text-gray-900 transition-colors">Instagram</a>
+        </div>
+        <span class="text-[0.65rem] text-gray-400 mt-2 lowercase font-light">{t.curator}</span>
+      </div>
+      <div class="flex flex-col items-center md:items-start">
+        <a href="https://t.me/chumfusion" target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 transition-colors">Telegram</a>
+        <span class="text-[0.65rem] text-gray-400 mt-2 lowercase font-light hover:text-gray-900"><a href="https://t.me/chumfusion" target="_blank" rel="noopener noreferrer">webmaster</a></span>
+      </div>
+    </div>
+  </div>
+  <div class="text-xs text-center text-gray-400 font-light mt-8 px-4 md:hidden">
+    &copy; {currentYear} {t.rights}
+  </div>
+</footer>

@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	lang?: string;
+}
+
+const { title = "Трансформації | Виставка", lang = "uk" } = Astro.props;
+
+const seoDesc = lang === 'uk' 
+	? "Виставка «Трансформації» у Кременчуцькій міській художній галереї. Живопис, графіка, інсталяції та сучасне мистецтво від видатних митців."
+	: "\"Transformations\" Exhibition at the Kremenchuk City Art Gallery. Paintings, graphics, installations and modern art by prominent artists.";
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		
+		<!-- Primary Meta Tags -->
+		<meta name="title" content={title} />
+		<meta name="description" content={seoDesc} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={seoDesc} />
+		<meta property="og:image" content={new URL('/og-image.jpg', Astro.url)} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={seoDesc} />
+		<meta property="twitter:image" content={new URL('/og-image.jpg', Astro.url)} />
+
+		<!-- Google Fonts: Open Sans -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-white text-gray-900 font-sans antialiased overflow-x-hidden min-h-screen flex flex-col">
+		<slot />
+	</body>
+</html>

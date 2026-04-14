@@ -1,0 +1,137 @@
+---
+const { lang = 'uk' } = Astro.props;
+
+const translations = {
+  uk: {
+    title: 'Трансформації',
+    subtitle: 'мистецька виставка',
+    concept: 'Концепція',
+    artworks: 'Картини',
+    participants: 'Учасники',
+    exhibition: 'Експозиція',
+    langSwitch: 'EN',
+    langLink: '/en'
+  },
+  en: {
+    title: 'Transformations',
+    subtitle: 'art exhibition',
+    concept: 'Concept',
+    artworks: 'Artworks',
+    participants: 'Participants',
+    exhibition: 'Exhibition',
+    langSwitch: 'UA',
+    langLink: '/'
+  }
+};
+
+const t = translations[lang];
+---
+<header class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center min-h-[60px] py-2 md:py-0">
+    <div class="flex flex-col items-end text-right">
+      <a href="#" class="text-lg md:text-xl font-bold uppercase tracking-tight text-gray-900 transition-colors hover:text-gray-500 leading-none">
+        {t.title}
+      </a>
+      <span class="text-[0.55rem] md:text-[0.6rem] lowercase tracking-[0.45em] font-light text-gray-500 w-full text-right mt-[3px] leading-none" style="margin-right: -0.45em;">{t.subtitle}</span>
+    </div>
+
+    <!-- Mobile Hamburger Toggle -->
+    <div class="flex space-x-4 items-center md:hidden ml-auto">
+      <a href={t.langLink} class="text-[0.65rem] font-bold text-gray-900 border border-gray-300 rounded px-1.5 py-0.5 relative z-50">{t.langSwitch}</a>
+      <button id="mobile-menu-btn" class="block text-gray-900 focus:outline-none relative z-50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <nav id="mobile-menu" class="hidden w-full md:flex md:w-auto md:space-x-8 mt-3 md:mt-0 flex-col md:flex-row space-y-3 md:space-y-0 text-center pb-3 md:pb-0 border-t border-gray-100 md:border-none pt-3 md:pt-0 items-center">
+      <a href="#concept" class="nav-link text-xs font-semibold uppercase tracking-widest text-gray-600 hover:text-gray-900 transition-colors">{t.concept}</a>
+      <a href="#artworks" class="nav-link text-xs font-semibold uppercase tracking-widest text-gray-600 hover:text-gray-900 transition-colors">{t.artworks}</a>
+      <a href="#participants" class="nav-link text-xs font-semibold uppercase tracking-widest text-gray-600 hover:text-gray-900 transition-colors">{t.participants}</a>
+      <a href="#exhibition" class="nav-link text-xs font-semibold uppercase tracking-widest text-gray-600 hover:text-gray-900 transition-colors">{t.exhibition}</a>
+      <a href={t.langLink} class="hidden md:block text-[0.65rem] font-bold text-gray-900 border border-gray-300 rounded px-1.5 py-0.5 hover:bg-gray-100 transition-colors">{t.langSwitch}</a>
+    </nav>
+  </div>
+</header>
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('menu-icon');
+  
+  if (btn && menu && icon) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+      menu.classList.toggle('flex');
+      if (menu.classList.contains('hidden')) {
+        icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      } else {
+        icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+      }
+    });
+
+    const links = menu.querySelectorAll('nav a[href^="#"]');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          menu.classList.add('hidden');
+          menu.classList.remove('flex');
+          icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        }
+      });
+    });
+  }
+
+  // Active section tracking
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-30% 0px -70% 0px',
+    threshold: 0
+  };
+
+  const observerCallback = (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const activeId = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === `#${activeId}`) {
+            link.classList.add('active', 'text-gray-900');
+            link.classList.remove('text-gray-600');
+          } else {
+            link.classList.remove('active', 'text-gray-900');
+            link.classList.add('text-gray-600');
+          }
+        });
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(observerCallback, observerOptions);
+  sections.forEach(sec => observer.observe(sec));
+</script>
+
+<style>
+  .nav-link {
+    position: relative;
+    padding-bottom: 4px;
+    margin-bottom: -4px;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+  .nav-link.active::after,
+  .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+const { lang = 'uk' } = Astro.props;
+// Read exhibition webp images
+const images = Object.values(import.meta.glob('../assets/images/exhibition/*.webp', { eager: true }));
+
+const tHeading = lang === 'uk' ? 'Експозиція' : 'Exhibition';
+---
+<section id="exhibition" class="pt-16 pb-24 md:py-32 bg-white overflow-hidden">
+  <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 block">
+      <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest text-gray-900 inline-block relative">
+        {tHeading}
+        <div class="absolute w-1/2 h-1 bg-gray-900 left-1/4 -bottom-4"></div>
+      </h2>
+    </div>
+
+    <!-- Swiper container -->
+    <div class="swiper exhibition-swiper overflow-visible pb-12 cursor-grab active:cursor-grabbing">
+      <div class="swiper-wrapper">
+        {images.map((img: any) => (
+          <div class="swiper-slide select-none">
+            <img src={img.default.src} class="w-full aspect-square object-cover shadow-lg rounded-sm" alt="Exhibition photo" loading="lazy" />
+          </div>
+        ))}
+      </div>
+      <div class="swiper-pagination mt-8 relative"></div>
+      <!-- Custom arrows -->
+      <div class="swiper-button-prev !text-gray-900 drop-shadow-md"></div>
+      <div class="swiper-button-next !text-gray-900 drop-shadow-md"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Keyboard, Autoplay, FreeMode } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new Swiper('.exhibition-swiper', {
+      modules: [Navigation, Pagination, Keyboard, Autoplay, FreeMode],
+      spaceBetween: 10,
+      loop: true,
+      freeMode: true,
+      keyboard: {
+          enabled: true,
+      },
+      speed: 4000,
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.exhibition-swiper .swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+      },
+      navigation: {
+        nextEl: '.exhibition-swiper .swiper-button-next',
+        prevEl: '.exhibition-swiper .swiper-button-prev',
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 2,
+          spaceBetween: 10,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
+        1920: {
+          slidesPerView: 5,
+          spaceBetween: 40,
+        }
+      }
+    });
+  });
+</script>
+<style>
+  :global(.exhibition-swiper .swiper-pagination-bullet) {
+    background: #111827 !important;
+  }
+  :global(.exhibition-swiper .swiper-wrapper) {
+    transition-timing-function: linear !important;
+  }
+</style>
