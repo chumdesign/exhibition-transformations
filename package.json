@@ -9,8 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "optimize:images": "node scripts/optimize-images.js",
+    "generate:hd": "node scripts/generate-hd-images.js"
   },
+
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.5",
