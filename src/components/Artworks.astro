@@ -118,12 +118,16 @@ const tHeading = lang === 'uk' ? 'Картини' : 'Artworks';
 </section>
 
 <!-- Simple Vanilla JS Lightbox -->
-<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex-col items-center justify-center backdrop-blur-md opacity-0 transition-opacity duration-300">
-  <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-gray-400 transition-colors cursor-pointer z-50">
-    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex-col items-center justify-center backdrop-blur-md opacity-0 transition-opacity duration-300 overflow-y-auto">
+  <!-- Закрывающий крестик — вне скролла, прижат к углу -->
+  <button id="lightbox-close" class="fixed top-3 right-3 text-white/70 hover:text-white transition-colors cursor-pointer z-[110]" aria-label="Close">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
   </button>
-  <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain shadow-2xl relative z-10" />
-  <div id="lightbox-caption" class="text-white mt-6 text-center px-4 relative z-10"></div>
+  <!-- Контент попапа — может скроллиться -->
+  <div class="flex flex-col items-center justify-start min-h-full py-12 px-4 w-full">
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain shadow-2xl" />
+    <div id="lightbox-caption" class="text-white mt-6 text-center max-w-[90vw]"></div>
+  </div>
 </div>
 
 <script>
