@@ -1,7 +1,7 @@
 ---
 const { lang = 'uk' } = Astro.props;
 
-// Translate mappings
+// Translate mappings — техніка/матеріал
 const dictionary: Record<string, string> = {
   "полотно": "canvas",
   "олія": "oil",
@@ -30,6 +30,24 @@ const dictionary: Record<string, string> = {
   "см": "cm"
 };
 
+// Транслітерація українських символів → латиниця
+const translitMap: Record<string, string> = {
+  "а": "a", "б": "b", "в": "v", "г": "h", "ґ": "g", "д": "d", "е": "e", "є": "ye",
+  "ж": "zh", "з": "z", "и": "y", "і": "i", "ї": "yi", "й": "i", "к": "k", "л": "l",
+  "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u",
+  "ф": "f", "х": "kh", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch", "ь": "", "ю": "iu", "я": "ia",
+  "А": "A", "Б": "B", "В": "V", "Г": "H", "Ґ": "G", "Д": "D", "Е": "E", "Є": "Ye",
+  "Ж": "Zh", "З": "Z", "И": "Y", "І": "I", "Ї": "Yi", "Й": "Y", "К": "K", "Л": "L",
+  "М": "M", "Н": "N", "О": "O", "П": "P", "Р": "R", "С": "S", "Т": "T", "У": "U",
+  "Ф": "F", "Х": "Kh", "Ц": "Ts", "Ч": "Ch", "Ш": "Sh", "Щ": "Shch", "Ь": "", "Ю": "Yu", "Я": "Ya",
+  "'": "", "'": ""
+};
+
+const transliterate = (text: string): string => {
+  if (lang === 'uk') return text;
+  return text.split('').map(char => translitMap[char] ?? char).join('');
+};
+
 const translateDetails = (details: string) => {
    if (lang === 'uk') return details;
    let enDetails = details.toLowerCase();
@@ -50,20 +68,23 @@ const artworks = Object.entries(rawImages).map(([path, img]: [string, any]) => {
   let fullCaptionHtml = '';
   
   if (parts.length >= 3) {
-    const author = parts[0].replace(/,\s*$/, '').trim();
-    let title = parts[1].trim();
-    if (title.length > 0) {
-      // Uppercase the first letter of the title
-      title = title.charAt(0).toUpperCase() + title.slice(1);
+    const authorRaw = parts[0].replace(/,\s*$/, '').trim();
+    let titleRaw = parts[1].trim();
+    if (titleRaw.length > 0) {
+      titleRaw = titleRaw.charAt(0).toUpperCase() + titleRaw.slice(1);
     }
     const details = parts[2].replace(/\.webp$/, '').replace(/^,\s*/, '').trim();
+
+    // Транслітеруємо автора і назву для EN
+    const author = transliterate(authorRaw);
+    const title = transliterate(titleRaw);
     
     authorHtml = author;
     titleHtml = title;
     detailsHtml = translateDetails(details);
     fullCaptionHtml = `<span class="font-bold block mb-2 text-lg tracking-wide md:text-xl"><span class="uppercase">${author}</span> — «${title}»</span><span class="font-light text-sm md:text-base opacity-80">${detailsHtml}</span>`;
   } else {
-    authorHtml = filename.replace('.webp', '');
+    authorHtml = transliterate(filename.replace('.webp', ''));
     fullCaptionHtml = `<span class="font-bold block mb-1 text-lg uppercase tracking-wide md:text-xl">${authorHtml}</span>`;
   }
 
@@ -77,8 +98,8 @@ const artworks = Object.entries(rawImages).map(([path, img]: [string, any]) => {
     height: img.default.height || 600
   };
 }).sort((a, b) => {
-  const isAPriority = a.author.includes('Шуляк') || a.author.includes('Ткаченко');
-  const isBPriority = b.author.includes('Шуляк') || b.author.includes('Ткаченко');
+  const isAPriority = a.author.includes('Шуляк') || a.author.includes('Ткаченко') || a.author.includes('Shulyak') || a.author.includes('Tkachenko');
+  const isBPriority = b.author.includes('Шуляк') || b.author.includes('Ткаченко') || b.author.includes('Shulyak') || b.author.includes('Tkachenko');
   if (isAPriority && !isBPriority) return -1;
   if (!isAPriority && isBPriority) return 1;
   return 0;
