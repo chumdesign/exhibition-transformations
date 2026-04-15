@@ -4,9 +4,10 @@ import '../styles/global.css';
 interface Props {
 	title?: string;
 	lang?: string;
+	ogImage?: string;
 }
 
-const { title = "Трансформації | Виставка", lang = "uk" } = Astro.props;
+const { title = "Трансформації | Виставка", lang = "uk", ogImage = "/og-image.jpg" } = Astro.props;
 
 const seoDesc = lang === 'uk' 
 	? "Виставка «Трансформації» у Кременчуцькій міській художній галереї. Живопис, графіка, інсталяції та сучасне мистецтво від видатних митців."
@@ -31,14 +32,14 @@ const seoDesc = lang === 'uk'
 		<meta property="og:url" content={Astro.url} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={seoDesc} />
-		<meta property="og:image" content={new URL('/og-image.jpg', Astro.url)} />
+		<meta property="og:image" content={new URL(ogImage, Astro.url)} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:url" content={Astro.url} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={seoDesc} />
-		<meta property="twitter:image" content={new URL('/og-image.jpg', Astro.url)} />
+		<meta property="twitter:image" content={new URL(ogImage, Astro.url)} />
 
 		<!-- Google Fonts: Open Sans -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
