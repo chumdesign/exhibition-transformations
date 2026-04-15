@@ -21,13 +21,17 @@ const dictionary: Record<string, string> = {
   "перо": "pen",
   "двп": "fiberboard",
   "левкас": "gesso",
-  "жвт": "zhvt",
+  "жвт": "painting",
   "емаль": "enamel",
   "темпера": "tempera",
   "артоб_єкт": "art object",
   "тоноване дерево": "tinted wood",
   "фанера": "plywood",
-  "см": "cm"
+  "серія": "series",
+  "цивілізація": "Civilization",
+  "з триптиха": "from the triptych",
+  "см": "cm",
+  "sm": "cm"
 };
 
 // Транслітерація українських символів → латиниця
@@ -70,12 +74,18 @@ const artworks = Object.entries(rawImages).map(([path, img]: [string, any]) => {
   let fullCaptionHtml = '';
   
   if (parts.length >= 3) {
-    const authorRaw = parts[0].replace(/,\s*$/, '').trim();
+    let authorRaw = parts[0].replace(/,\s*$/, '').trim();
     let titleRaw = parts[1].trim();
     if (titleRaw.length > 0) {
       titleRaw = titleRaw.charAt(0).toUpperCase() + titleRaw.slice(1);
     }
-    const details = parts[2].replace(/\.webp$/, '').replace(/^,\s*/, '').trim();
+    const details = parts.slice(2).join('_').replace(/\.webp$/, '').replace(/^,\s*/, '').trim();
+
+    // Замінюємо деякі специфічні слова в імені/назві перед транслітерацією
+    if (lang !== 'uk') {
+      authorRaw = authorRaw.toLowerCase().replace('з триптиха', 'from the triptych');
+      titleRaw = titleRaw.replace(/Цивілізація/gi, 'Civilization');
+    }
 
     // Транслітеруємо автора і назву для EN
     const author = transliterate(authorRaw);
