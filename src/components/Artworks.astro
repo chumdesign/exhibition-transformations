@@ -3,19 +3,21 @@ const { lang = 'uk' } = Astro.props;
 
 // Translate mappings — техніка/матеріал
 const dictionary: Record<string, string> = {
+  "текстильний колаж": "textile collage",
+  "змішана техніка": "mixed media",
+  "тоноване дерево": "tinted wood",
+  "артоб_єкт": "art object",
   "полотно": "canvas",
   "олія": "oil",
   "папір": "paper",
   "акварель": "watercolor",
   "акрил": "acrylic",
-  "змішана техніка": "mixed media",
   "олівець": "pencil",
   "дерево": "wood",
   "метал": "metal",
   "офорт": "etching",
   "травлення": "engraving",
   "текстиль": "textile",
-  "текстильний колаж": "textile collage",
   "скло": "glass",
   "туш": "ink",
   "перо": "pen",
@@ -24,8 +26,6 @@ const dictionary: Record<string, string> = {
   "жвт": "painting",
   "емаль": "enamel",
   "темпера": "tempera",
-  "артоб_єкт": "art object",
-  "тоноване дерево": "tinted wood",
   "фанера": "plywood",
   "серія": "series",
   "цивілізація": "Civilization",
@@ -116,11 +116,17 @@ const artworks = Object.entries(rawImages).map(([path, img]: [string, any]) => {
     height: img.default.height || 600
   };
 }).sort((a, b) => {
-  const isAPriority = a.author.includes('Шуляк') || a.author.includes('Ткаченко') || a.author.includes('Shulyak') || a.author.includes('Tkachenko');
-  const isBPriority = b.author.includes('Шуляк') || b.author.includes('Ткаченко') || b.author.includes('Shulyak') || b.author.includes('Tkachenko');
-  if (isAPriority && !isBPriority) return -1;
-  if (!isAPriority && isBPriority) return 1;
-  return 0;
+  const isAShulyak = a.author.includes('Шуляк') || a.author.includes('Shulyak');
+  const isBShulyak = b.author.includes('Шуляк') || b.author.includes('Shulyak');
+  if (isAShulyak && !isBShulyak) return -1;
+  if (!isAShulyak && isBShulyak) return 1;
+
+  const isATkachenko = a.author.includes('Ткаченко') || a.author.includes('Tkachenko');
+  const isBTkachenko = b.author.includes('Ткаченко') || b.author.includes('Tkachenko');
+  if (isATkachenko && !isBTkachenko) return -1;
+  if (!isATkachenko && isBTkachenko) return 1;
+
+  return a.author.localeCompare(b.author);
 });
 
 const tHeading = lang === 'uk' ? 'Картини' : 'Artworks';
