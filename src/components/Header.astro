@@ -116,22 +116,20 @@ const t = translations[lang];
 <style>
   .nav-link {
     position: relative;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
   }
   .nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -8px;
     left: 50%;
     width: 0;
-    height: 1px;
+    height: 4px;
     background-color: currentColor;
     transition: width 0.3s ease, left 0.3s ease;
   }
   .nav-link.active::after,
   .nav-link:hover::after {
-    width: 100%;
-    left: 0;
+    width: 50%;
+    left: 25%;
   }
 </style>
